@@ -64,7 +64,12 @@ def get_book_info(html):
             comment_text = comment.find("span", class_="black").getText()
             book_comments.append(comment_text)
 
-    book_info = {"name": book_name, "image": urljoin("https://tululu.org/", image), "comments": book_comments}
+    book_genres = []
+    genres = soup.find("span", class_="d_book").find_all("a")
+    for genre in genres:
+        book_genres.append(genre.get_text())
+
+    book_info = {"name": book_name, "image": urljoin("https://tululu.org/", image), "comments": book_comments, "genres": book_genres}
     
     return book_info
 
