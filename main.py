@@ -3,7 +3,6 @@ from pprint import pprint
 from urllib.error import HTTPError
 from urllib.parse import urljoin
 import requests
-from pathlib import Path
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
 import os
@@ -89,8 +88,8 @@ def main():
     args = parser.parse_args()
     min_id = args.start_id
     max_id = args.end_id
-    if min_id<0 or max_id<0:
-         raise Exception('Параметры должны быть больше нуля')
+    if min_id<0 or max_id<0 or max_id<=min_id:
+         raise Exception('Параметры должны быть больше нуля и end_id>start_id')
     i = min_id
     while i <= max_id:
         url = f"https://tululu.org/b{i}/"
@@ -101,7 +100,7 @@ def main():
 
         book_info = parse_book_page(html)
         try:
-            book_path = download_txt(
+            download_txt(
                 f"https://tululu.org/txt.php?id={i}", f"{i}.{book_info['name']}"
             )
         except:
@@ -110,7 +109,7 @@ def main():
         extension = get_image_extension(book_info["image"])
     
         try:
-            download_image(book_info["image"], f"{i}.{extension}")
+            download_image(book_info["image"], f"{i}{extension}")
         except HTTPError as e:
             print("Картинка не скачалась")
         pprint(book_info)
