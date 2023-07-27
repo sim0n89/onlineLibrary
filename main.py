@@ -1,3 +1,4 @@
+import argparse
 from pprint import pprint
 from urllib.error import HTTPError
 from urllib.parse import urljoin
@@ -80,7 +81,18 @@ def get_image_extension(url):
 
 
 def main():
-    for i in range(1, 11):
+    parser = argparse.ArgumentParser(
+        description="Введите и максимальный минимальный id книги"
+    )
+    parser.add_argument("-start", "--start_id", help="Минимальный id книги", default=1, type=int)
+    parser.add_argument("-end", "--end_id", help="Максимальный id кники", default=10, type=int)
+    args = parser.parse_args()
+    min_id = args.start_id
+    max_id = args.end_id
+    if min_id<0 or max_id<0:
+         raise Exception('Параметры должны быть больше нуля')
+    i = min_id
+    while i <= max_id:
         url = f"https://tululu.org/b{i}/"
         try:
             html = get_html(url)
@@ -102,6 +114,7 @@ def main():
         except HTTPError as e:
             print("Картинка не скачалась")
         pprint(book_info)
+        i+=1
 
 if __name__ == "__main__":
     main()
