@@ -1,3 +1,4 @@
+from pprint import pprint
 from urllib.error import HTTPError
 from urllib.parse import urljoin
 import requests
@@ -54,7 +55,17 @@ def get_book_info(html):
         book_name = h1[0].strip()
     else:
         book_name = h1
-    book_info = {"name": book_name, "image": urljoin("https://tululu.org/", image)}
+
+    comments = soup.find_all("div", {"class":"texts"})
+    
+    book_comments=[]
+    if comments:
+        for comment in comments:
+            comment_text = comment.find("span", class_="black").getText()
+            book_comments.append(comment_text)
+
+    book_info = {"name": book_name, "image": urljoin("https://tululu.org/", image), "comments": book_comments}
+    
     return book_info
 
 
@@ -80,11 +91,12 @@ def main():
             print(f"Вы не скачали {book_info['name']}, ee нет на сайте")
 
         extension = get_image_extension(book_info["image"])
-
+    
         try:
             download_image(book_info["image"], f"{i}.{extension}")
         except HTTPError as e:
             print("Картинка не скачалась")
+        pprint(book_info)
 
 if __name__ == "__main__":
     main()
