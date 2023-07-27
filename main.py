@@ -46,7 +46,7 @@ def get_html(url):
     return response.text
 
 
-def get_book_info(html):
+def parse_book_page(html):
     soup = BeautifulSoup(html, "lxml")
     h1 = soup.find("h1").get_text()
     image = soup.find("div", class_="bookimage").find("img").get("src")
@@ -87,7 +87,7 @@ def main():
         except:
             continue
 
-        book_info = get_book_info(html)
+        book_info = parse_book_page(html)
         try:
             book_path = download_txt(
                 f"https://tululu.org/txt.php?id={i}", f"{i}.{book_info['name']}"
