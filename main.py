@@ -2,8 +2,8 @@ import argparse
 import os
 from os.path import splitext
 from pprint import pprint
+from time import sleep
 from urllib import parse
-from urllib.error import HTTPError
 from urllib.parse import urljoin
 
 import requests
@@ -57,9 +57,9 @@ def parse_book_page(html):
     else:
         book_name = book_title
 
-    comments = soup.find_all("div", {"class":"texts"})
-    
-    book_comments=[]
+    comments = soup.find_all("div", {"class": "texts"})
+
+    book_comments = []
     if comments:
         for comment in comments:
             comment_text = comment.find("span", class_="black").getText()
@@ -70,8 +70,13 @@ def parse_book_page(html):
     for genre in genres:
         book_genres.append(genre.get_text())
 
-    book_info = {"name": book_name, "image": urljoin("https://tululu.org/", image), "comments": book_comments, "genres": book_genres}
-    
+    book_info = {
+        "name": book_name,
+        "image": urljoin("https://tululu.org/", image),
+        "comments": book_comments,
+        "genres": book_genres,
+    }
+
     return book_info
 
 
@@ -84,19 +89,29 @@ def main():
     parser = argparse.ArgumentParser(
         description="Парсим книги с сайта tululu.org. Введите диапазон id книг которые хотите скачать. --start_id - id книги с которой начнется сбор, --end_id - id последней книги."
     )
-    parser.add_argument("-start", "--start_id", help="Минимальный id книги", default=1, type=int)
-    parser.add_argument("-end", "--end_id", help="Максимальный id кники", default=10, type=int)
+    parser.add_argument(
+        "-start", "--start_id", help="Минимальный id книги", default=1, type=int
+    )
+    parser.add_argument(
+        "-end", "--end_id", help="Максимальный id кники", default=10, type=int
+    )
     args = parser.parse_args()
     min_id = args.start_id
     max_id = args.end_id
-    if min_id<0 or max_id<0 or max_id<=min_id:
-         raise Exception('Параметры должны быть больше нуля и end_id>start_id')
+    if min_id < 0 or max_id < 0 or max_id <= min_id:
+        raise Exception("Параметры должны быть больше нуля и end_id>start_id")
     id = min_id
     while id <= max_id:
-        url = f"https://tululu.org/b{id}/"
+        url = f"https://tululu.org/{id}/"
         try:
             html = get_html(url)
-        except HTTPError as e:
+        except requests.HTTPError as e:
+            print(e)
+            id += 1
+            continue
+        except requests.ConnectionError as e:
+            print(f"Ошибка соединения при скачивании книги по id={id}")
+            sleep(15)
             continue
 
         book_info = parse_book_page(html)
@@ -104,17 +119,24 @@ def main():
             download_txt(
                 f"https://tululu.org/txt.php?id={id}", f"{id}.{book_info['name']}"
             )
-        except HTTPError as e:
+        except requests.HTTPError as e:
             print(f"Вы не скачали {book_info['name']}, ee нет на сайте")
+            id += 1
+            continue
+        except requests.ConnectionError as e:
+            print(f"Ошибка соединения при скачивании книги по id={id}")
+            sleep(15)
+            continue
 
         extension = get_image_extension(book_info["image"])
-    
+
         try:
             download_image(book_info["image"], f"{id}{extension}")
-        except HTTPError as e:
+        except requests.HTTPError as e:
             print("Картинка не скачалась")
         pprint(book_info)
-        id+=1
+        id += 1
+
 
 if __name__ == "__main__":
     main()
