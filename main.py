@@ -82,7 +82,7 @@ def get_image_extension(url):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Парсим книги с сайта tululu.org. Введите диапазон id книг которые хотите скачать."
+        description="Парсим книги с сайта tululu.org. Введите диапазон id книг которые хотите скачать. --start_id - id книги с которой начнется сбор, --end_id - id последней книги."
     )
     parser.add_argument("-start", "--start_id", help="Минимальный id книги", default=1, type=int)
     parser.add_argument("-end", "--end_id", help="Максимальный id кники", default=10, type=int)
