@@ -64,10 +64,8 @@ def parse_book_page(html):
         comment_text = comment.find("span", class_="black").getText()
         book_comments.append(comment_text)
 
-    book_genres = []
     genres = soup.find("span", class_="d_book").find_all("a")
-    for genre in genres:
-        book_genres.append(genre.get_text())
+    book_genres = [genre.get_text() for genre in genres ]
 
     book = {
         "name": book_name,
