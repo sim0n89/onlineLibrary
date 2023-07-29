@@ -1,7 +1,6 @@
 import argparse
 import os
 from os.path import splitext
-from pprint import pprint
 from time import sleep
 from urllib import parse
 from urllib.parse import urljoin
@@ -131,7 +130,6 @@ def main():
             download_image(book["image"], f"{id}{extension}")
         except requests.HTTPError as e:
             print("Картинка не скачалась")
-        pprint(book)
         id += 1
 
 
