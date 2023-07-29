@@ -49,13 +49,13 @@ def get_html(url):
 
 def parse_book_page(html):
     soup = BeautifulSoup(html, "lxml")
-    h1 = soup.find("h1").get_text()
+    book_title = soup.find("h1").get_text()
     image = soup.find("div", class_="bookimage").find("img").get("src")
-    if "::" in h1:
-        h1 = h1.split("::")
-        book_name = h1[0].strip()
+    if "::" in book_title:
+        book_title = book_title.split("::")
+        book_name = book_title[0].strip()
     else:
-        book_name = h1
+        book_name = book_title
 
     comments = soup.find_all("div", {"class":"texts"})
     
@@ -91,9 +91,9 @@ def main():
     max_id = args.end_id
     if min_id<0 or max_id<0 or max_id<=min_id:
          raise Exception('Параметры должны быть больше нуля и end_id>start_id')
-    i = min_id
-    while i <= max_id:
-        url = f"https://tululu.org/b{i}/"
+    id = min_id
+    while id <= max_id:
+        url = f"https://tululu.org/b{id}/"
         try:
             html = get_html(url)
         except:
@@ -102,7 +102,7 @@ def main():
         book_info = parse_book_page(html)
         try:
             download_txt(
-                f"https://tululu.org/txt.php?id={i}", f"{i}.{book_info['name']}"
+                f"https://tululu.org/txt.php?id={id}", f"{id}.{book_info['name']}"
             )
         except:
             print(f"Вы не скачали {book_info['name']}, ee нет на сайте")
@@ -110,11 +110,11 @@ def main():
         extension = get_image_extension(book_info["image"])
     
         try:
-            download_image(book_info["image"], f"{i}{extension}")
+            download_image(book_info["image"], f"{id}{extension}")
         except HTTPError as e:
             print("Картинка не скачалась")
         pprint(book_info)
-        i+=1
+        id+=1
 
 if __name__ == "__main__":
     main()
