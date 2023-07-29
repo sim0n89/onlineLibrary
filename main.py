@@ -70,14 +70,14 @@ def parse_book_page(html):
     for genre in genres:
         book_genres.append(genre.get_text())
 
-    book_info = {
+    book = {
         "name": book_name,
         "image": urljoin("https://tululu.org/", image),
         "comments": book_comments,
         "genres": book_genres,
     }
 
-    return book_info
+    return book
 
 
 def get_image_extension(url):
