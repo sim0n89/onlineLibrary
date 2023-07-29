@@ -47,7 +47,7 @@ def get_html(url):
     return response.text
 
 
-def parse_book_page(html):
+def parse_book_page(html, url):
     soup = BeautifulSoup(html, "lxml")
     book_title = soup.find("h1").get_text()
     image = soup.find("div", class_="bookimage").find("img").get("src")
@@ -66,10 +66,9 @@ def parse_book_page(html):
 
     genres = soup.find("span", class_="d_book").find_all("a")
     book_genres = [genre.get_text() for genre in genres ]
-
     book = {
         "name": book_name,
-        "image": urljoin("https://tululu.org/", image),
+        "image": urljoin(url, image),
         "comments": book_comments,
         "genres": book_genres,
     }
@@ -111,7 +110,7 @@ def main():
             sleep(15)
             continue
 
-        book = parse_book_page(html)
+        book = parse_book_page(html, url)
         try:
             params = {
                 "id": id
