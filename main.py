@@ -1,14 +1,14 @@
 import argparse
-from urllib.error import HTTPError
-from urllib.parse import urljoin
-from pprint import pprint
-
-from bs4 import BeautifulSoup
 import os
 from os.path import splitext
-from pathvalidate import sanitize_filename
-import requests
+from pprint import pprint
 from urllib import parse
+from urllib.error import HTTPError
+from urllib.parse import urljoin
+
+import requests
+from bs4 import BeautifulSoup
+from pathvalidate import sanitize_filename
 
 
 def check_for_redirect(response):
@@ -82,7 +82,7 @@ def get_image_extension(url):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Введите и максимальный минимальный id книги"
+        description="Парсим книги с сайта tululu.org. Введите диапазон id книг которые хотите скачать."
     )
     parser.add_argument("-start", "--start_id", help="Минимальный id книги", default=1, type=int)
     parser.add_argument("-end", "--end_id", help="Максимальный id кники", default=10, type=int)
