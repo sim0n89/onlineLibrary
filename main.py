@@ -18,8 +18,7 @@ def check_for_redirect(response):
 
 def download_txt(url, params, name, folder="books/"):
     name = sanitize_filename(name)
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    os.makedirs(folder,exist_ok = True)
     file_path = os.path.join(folder, f"{name}.txt")
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -31,8 +30,7 @@ def download_txt(url, params, name, folder="books/"):
 
 def download_image(url, name):
     folder = "images/"
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    os.makedirs(folder,exist_ok = True)
     file_path = os.path.join(folder, name)
     response = requests.get(url)
     response.raise_for_status()
