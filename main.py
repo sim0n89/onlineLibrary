@@ -96,7 +96,7 @@ def main():
         url = f"https://tululu.org/b{id}/"
         try:
             html = get_html(url)
-        except:
+        except HTTPError as e:
             continue
 
         book_info = parse_book_page(html)
@@ -104,7 +104,7 @@ def main():
             download_txt(
                 f"https://tululu.org/txt.php?id={id}", f"{id}.{book_info['name']}"
             )
-        except:
+        except HTTPError as e:
             print(f"Вы не скачали {book_info['name']}, ee нет на сайте")
 
         extension = get_image_extension(book_info["image"])
