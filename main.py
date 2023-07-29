@@ -60,10 +60,9 @@ def parse_book_page(html):
     comments = soup.find_all("div", {"class": "texts"})
 
     book_comments = []
-    if comments:
-        for comment in comments:
-            comment_text = comment.find("span", class_="black").getText()
-            book_comments.append(comment_text)
+    for comment in comments:
+        comment_text = comment.find("span", class_="black").getText()
+        book_comments.append(comment_text)
 
     book_genres = []
     genres = soup.find("span", class_="d_book").find_all("a")
@@ -102,7 +101,7 @@ def main():
         raise Exception("Параметры должны быть больше нуля и end_id>start_id")
     id = min_id
     while id <= max_id:
-        url = f"https://tululu.org/{id}/"
+        url = f"https://tululu.org/b{id}/"
         try:
             html = get_html(url)
         except requests.HTTPError as e:
@@ -114,16 +113,16 @@ def main():
             sleep(15)
             continue
 
-        book_info = parse_book_page(html)
+        book = parse_book_page(html)
         try:
             params = {
                 "id": id
             }
             download_txt(
-                f"https://tululu.org/txt.php", params , f"{id}.{book_info['name']}"
+                f"https://tululu.org/txt.php", params , f"{id}.{book['name']}"
             )
         except requests.HTTPError as e:
-            print(f"Вы не скачали {book_info['name']}, ee нет на сайте")
+            print(f"Вы не скачали {book['name']}, ee нет на сайте")
             id += 1
             continue
         except requests.ConnectionError as e:
@@ -131,13 +130,13 @@ def main():
             sleep(15)
             continue
 
-        extension = get_image_extension(book_info["image"])
+        extension = get_image_extension(book["image"])
 
         try:
-            download_image(book_info["image"], f"{id}{extension}")
+            download_image(book["image"], f"{id}{extension}")
         except requests.HTTPError as e:
             print("Картинка не скачалась")
-        pprint(book_info)
+        pprint(book)
         id += 1
 
 
