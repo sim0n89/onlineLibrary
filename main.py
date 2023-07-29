@@ -1,12 +1,13 @@
 import argparse
-from pprint import pprint
 from urllib.error import HTTPError
 from urllib.parse import urljoin
-import requests
+from pprint import pprint
+
 from bs4 import BeautifulSoup
-from pathvalidate import sanitize_filename
 import os
 from os.path import splitext
+from pathvalidate import sanitize_filename
+import requests
 from urllib import parse
 
 
