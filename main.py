@@ -16,12 +16,12 @@ def check_for_redirect(response):
         raise requests.HTTPError("it was redirect")
 
 
-def download_txt(url, name, folder="books/"):
+def download_txt(url, params, name, folder="books/"):
     name = sanitize_filename(name)
     if not os.path.exists(folder):
         os.makedirs(folder)
     file_path = os.path.join(folder, f"{name}.txt")
-    response = requests.get(url)
+    response = requests.get(url, params=params)
     response.raise_for_status()
     check_for_redirect(response)
     with open(file_path, "wb") as file:
@@ -116,8 +116,11 @@ def main():
 
         book_info = parse_book_page(html)
         try:
+            params = {
+                "id": id
+            }
             download_txt(
-                f"https://tululu.org/txt.php?id={id}", f"{id}.{book_info['name']}"
+                f"https://tululu.org/txt.php", params , f"{id}.{book_info['name']}"
             )
         except requests.HTTPError as e:
             print(f"Вы не скачали {book_info['name']}, ee нет на сайте")
