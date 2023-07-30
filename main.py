@@ -130,6 +130,10 @@ def main():
             download_image(book["image"], f"{id}{extension}")
         except requests.HTTPError as e:
             print("Картинка не скачалась")
+        except requests.ConnectionError as e:
+            print(f"Ошибка соединения при скачивании книги по id={id}")
+            sleep(15)
+            continue
         id += 1
 
 
