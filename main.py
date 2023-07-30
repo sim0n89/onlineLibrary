@@ -93,48 +93,48 @@ def main():
     max_id = args.end_id
     if min_id < 0 or max_id < 0 or max_id <= min_id:
         raise Exception("Параметры должны быть больше нуля и end_id>start_id")
-    id = min_id
-    while id <= max_id:
-        url = f"https://tululu.org/b{id}/"
+    book_id = min_id
+    while book_id <= max_id:
+        url = f"https://tululu.org/b{book_id}/"
         try:
             html = get_html(url)
         except requests.HTTPError as e:
             print(e)
-            id += 1
+            book_id += 1
             continue
         except requests.ConnectionError as e:
-            print(f"Ошибка соединения при скачивании книги по id={id}")
+            print(f"Ошибка соединения при скачивании книги по id={book_id}")
             sleep(15)
             continue
 
         book = parse_book_page(html, url)
         try:
             params = {
-                "id": id
+                "id": book_id
             }
             download_txt(
-                f"https://tululu.org/txt.php", params , f"{id}.{book['name']}"
+                f"https://tululu.org/txt.php", params , f"{book_id}.{book['name']}"
             )
         except requests.HTTPError as e:
             print(f"Вы не скачали {book['name']}, ee нет на сайте")
-            id += 1
+            book_id += 1
             continue
         except requests.ConnectionError as e:
-            print(f"Ошибка соединения при скачивании книги по id={id}")
+            print(f"Ошибка соединения при скачивании книги по id={book_id}")
             sleep(15)
             continue
 
         extension = get_image_extension(book["image"])
 
         try:
-            download_image(book["image"], f"{id}{extension}")
+            download_image(book["image"], f"{book_id}{extension}")
         except requests.HTTPError as e:
             print("Картинка не скачалась")
         except requests.ConnectionError as e:
-            print(f"Ошибка соединения при скачивании книги по id={id}")
+            print(f"Ошибка соединения при скачивании книги по id={book_id}")
             sleep(15)
             continue
-        id += 1
+        book_id += 1
 
 
 if __name__ == "__main__":
