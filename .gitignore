@@ -2,3 +2,5 @@ venv
 .env
 books
 images
+__pycache__
+*.json
