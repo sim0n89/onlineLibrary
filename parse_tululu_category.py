@@ -7,19 +7,18 @@ from time import sleep
 import os
 from pprint import pprint
 import json
+import argparse
 
 
-def get_books_links_from_category(category_url, max_page):
-    page_number = 1
+def get_books_links_from_category(category_url, end_page=9999, start_page=1):
     links = []
-    while page_number <= max_page:
-        category_url = urljoin(category_url, str(page_number))
+    for page in range(start_page, end_page, 1):
+        category_url = urljoin(category_url, str(page))
         try:
             html = get_html(category_url)
         except requests.HTTPError as e:
             print(e)
-            page_number += 1
-            continue
+            return links, category_name
         except requests.ConnectionError as e:
             print(f"Ошибка соединения при скачивании страницы по url={category_url}")
             sleep(15)
@@ -31,14 +30,25 @@ def get_books_links_from_category(category_url, max_page):
             link = book.select_one(".bookimage a").get("href")
             url = urljoin(category_url, link)
             links.append(url)
-        page_number += 1
-        return links, category_name
+       
+    return links, category_name
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Парсим книги с сайта tululu.org. Введите диапазон страниц категорий. --start_page - стартовая страница, --end_page - последняя страница категории."
+    )
+    parser.add_argument(
+        "-start", "--start_page", help="Номер стартовой страницы", default=1, type=int
+    )
+    parser.add_argument(
+        "-end", "--end_page", help="Номер максимальной страницы", default=9999, type=int
+    )
+    args = parser.parse_args()
+    start_page = args.start_page
+    end_page = args.end_page
     category_url = "https://tululu.org/l55/"
-
-    books_links, category_name = get_books_links_from_category(category_url, 2)
+    books_links, category_name = get_books_links_from_category(category_url, end_page, start_page)
     books = []
     for link in books_links:
         html = get_html(link)
