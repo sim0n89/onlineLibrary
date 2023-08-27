@@ -25,12 +25,10 @@ def get_books_links_from_category(category_url, max_page):
             sleep(15)
             continue
         soup = BeautifulSoup(html, "lxml")
-        category_name = (
-            soup.find("div", id="content").find("h2").get_text().split("::")[-1]
-        )
-        books = soup.find_all("table", class_="d_book")
+        category_name = soup.select_one("#content h2").text.split('::')[-1].strip()
+        books = soup.select("table.d_book")
         for book in books:
-            link = book.find("div", class_="bookimage").find("a").get("href")
+            link = book.select_one(".bookimage a").get("href")
             url = urljoin(category_url, link)
             links.append(url)
         page_number += 1

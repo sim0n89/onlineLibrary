@@ -22,8 +22,8 @@ def get_html(url):
 
 def parse_book_page(html, url):
     soup = BeautifulSoup(html, "lxml")
-    book_title = soup.find("h1").get_text()
-    image = soup.find("div", class_="bookimage").find("img").get("src")
+    book_title = soup.select_one("h1").text
+    image = soup.select_one(".bookimage img").get("src")
     if "::" in book_title:
         book_title = book_title.split("::")
         book_name = book_title[0].strip()
@@ -32,14 +32,14 @@ def parse_book_page(html, url):
         book_name = book_title
         book_author = ''
 
-    comments = soup.find_all("div", {"class": "texts"})
+    comments = soup.select(".texts")
 
     book_comments = []
     for comment in comments:
-        comment_text = comment.find("span", class_="black").getText()
+        comment_text = comment.select_one("span.black").text
         book_comments.append(comment_text)
 
-    genres = soup.find("span", class_="d_book").find_all("a")
+    genres = soup.select("span.d_book a")
     book_genres = [genre.get_text() for genre in genres]
     book = {
         "name": book_name,
