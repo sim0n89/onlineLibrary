@@ -5,7 +5,6 @@ import requests
 from books_helpers import get_html, parse_book_page, download_image, download_txt
 from time import sleep
 import os
-from pprint import pprint
 import json
 import argparse
 
