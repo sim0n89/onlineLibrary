@@ -1,12 +1,14 @@
-from bs4 import BeautifulSoup
+import argparse
+import json
+import os
+from time import sleep
 from urllib import parse
 from urllib.parse import urljoin
+
 import requests
-from books_helpers import get_html, parse_book_page, download_image, download_txt
-from time import sleep
-import os
-import json
-import argparse
+from bs4 import BeautifulSoup
+
+from books_helpers import download_image, download_txt, get_html, parse_book_page
 
 
 def get_books_links_from_category(category_url, end_page=9999, start_page=1):
