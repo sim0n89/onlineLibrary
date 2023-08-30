@@ -17,7 +17,7 @@ def get_books_links_from_category(category_url, end_page=9999, start_page=1):
             html = get_html(category_url)
         except requests.HTTPError as e:
             print(e)
-            return links, category_name
+            continue
         except requests.ConnectionError as e:
             print(f"Ошибка соединения при скачивании страницы по url={category_url}")
             sleep(15)
