@@ -52,8 +52,7 @@ def parse_book_page(html, url):
     return book
 
 
-def download_image(url, name):
-    folder = "images/"
+def download_image(url, name, folder="images/"):
     os.makedirs(folder, exist_ok=True)
     file_path = os.path.join(folder, name)
     response = requests.get(url)

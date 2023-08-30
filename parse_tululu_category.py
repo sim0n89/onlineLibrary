@@ -49,15 +49,24 @@ def main():
     parser.add_argument(
         "-s_txt", "--skip_txt", help="Не скачивать текст", action="store_true"
     )
-    # parser.add_argument(
-    #     "-f", "--dest_folder", help="Не скачивать текст", default=False, type=bool
-    # )
-    # dest_folder
+    parser.add_argument(
+        "-img_path", "--img_folder_path", help="Папка для картинок", default='images/'
+    )
+    parser.add_argument(
+        "-txt_path", "--txt_folder_path", help="Папка для текстов", default='books/'
+    )
+    parser.add_argument(
+        "-json_path", "--json_folder_path", help="Папка для json файлов", default='.'
+    )
+
     args = parser.parse_args()
     start_page = args.start_page
     end_page = args.end_page
     skip_img = args.skip_imgs
     skip_txt = args.skip_txt
+    images_path = args.img_folder_path
+    txt_path = args.txt_folder_path
+    json_path = args.json_folder_path
     category_url = "https://tululu.org/l55/"
     books_links, category_name = get_books_links_from_category(
         category_url, end_page, start_page
@@ -69,7 +78,7 @@ def main():
         if (not skip_img):
             try:
                 image_name = parse.urlparse(book["image"]).path.rstrip("/").split("/")[-1]
-                download_image(book["image"], image_name)
+                download_image(book["image"], image_name, images_path)
                 book["img_src"] = os.path.join("images", image_name)
             except requests.HTTPError as e:
                 print("Картинка не скачалась")
@@ -83,7 +92,7 @@ def main():
             try:
                 params = {"id": book_id}
                 book["book_path"] = download_txt(
-                    f"https://tululu.org/txt.php", params, f"{book_id}.{book['name']}"
+                    f"https://tululu.org/txt.php", params, f"{book_id}.{book['name']}", txt_path
                 )
             except requests.HTTPError as e:
                 print(f"Вы не скачали {book['name']}, ee нет на сайте")
@@ -93,7 +102,9 @@ def main():
                 sleep(15)
                 continue
             books.append(book)
-    with open(f"{category_name}.json", "w", encoding="utf-8") as file:
+    os.makedirs(json_path, exist_ok=True)
+    json_file_path = os.path.join(json_path, f"{category_name}.json")
+    with open(json_file_path, "w", encoding="utf-8") as file:
         json.dump(books, file, ensure_ascii=False)
 
 
