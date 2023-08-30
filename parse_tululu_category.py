@@ -75,7 +75,7 @@ def main():
     for link in books_links:
         html = get_html(link)
         book = parse_book_page(html, link)
-        if (not skip_img):
+        if not skip_img:
             try:
                 image_name = parse.urlparse(book["image"]).path.rstrip("/").split("/")[-1]
                 download_image(book["image"], image_name, images_path)
@@ -88,7 +88,7 @@ def main():
                 continue
 
         book_id = parse.urlparse(link).path.replace("/", "").replace("b", "")
-        if (not skip_txt):
+        if not skip_txt:
             try:
                 params = {"id": book_id}
                 book["book_path"] = download_txt(
