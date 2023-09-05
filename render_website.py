@@ -7,7 +7,7 @@ import pprint
 
 
 def on_reload():
-    with open("data.json", encoding="utf-8") as json_file:
+    with open("Научная фантастика.json", encoding="utf-8") as json_file:
         books = json.load(json_file)
 
     env = Environment(loader=FileSystemLoader("."))
