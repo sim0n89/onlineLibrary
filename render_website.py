@@ -17,7 +17,7 @@ def on_reload():
 
 
 server = Server()
-server.watch("templates/*.html", on_reload)
+server.watch("templates/*.html", on_reload )
 server.serve(root=".")
 
 
