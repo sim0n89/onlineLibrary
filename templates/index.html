@@ -6,7 +6,7 @@
         <ul class="pagination justify-content-center">
           {% set prev_page = current_page - 1 %}
           <li class="page-item {% if current_page==1 %} disabled {% endif %}">
-            <a class="page-link" href="/pages/index{{prev_page}}.html">Назад</a>
+            <a class="page-link" href="../pages/index{{prev_page}}.html">Назад</a>
           </li>
           {% for page in range(1,page_count) %} 
         
@@ -19,14 +19,14 @@
                   </li>
               {% else %}
                   <li class="page-item">
-                    <a class="page-link" href="/pages/index{{page}}.html">{{page}}</a>
+                    <a class="page-link" href="../pages/index{{page}}.html">{{page}}</a>
                   </li>
               {% endif %} 
           {% endfor %}
     
           <li class="page-item {% if current_page==page_count-1 %} disabled {% endif %}">
             {% set next_page = current_page + 1 %}
-            <a class="page-link " href="/pages/index{{next_page}}.html">Вперед</a>
+            <a class="page-link " href="../pages/index{{next_page}}.html">Вперед</a>
           </li>
         </ul>
       </nav>
